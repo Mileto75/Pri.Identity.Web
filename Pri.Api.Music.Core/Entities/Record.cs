@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Pri.Api.Music.Core.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,5 +17,6 @@ namespace Pri.CleanArchitecture.Music.Core.Entities
         public decimal Price { get; set; }
         public string Image { get; set; }
         public ICollection<Property> Properties { get; set; }
+        public ICollection<ApplicationUser> Users { get; set; }
     }
 }
