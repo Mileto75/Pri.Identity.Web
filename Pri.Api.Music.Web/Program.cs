@@ -1,4 +1,6 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Pri.Api.Music.Core.Entities;
 using Pri.Api.Music.Core.Interfaces.Repositories;
 using Pri.Api.Music.Core.Interfaces.Services;
 using Pri.Api.Music.Core.Services;
@@ -14,6 +16,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<ApplicationDbContext>
     (options => options
     .UseSqlServer(builder.Configuration.GetConnectionString("DefaultDb")));
+//register identity
+builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+{
+    //ONLY FOR TESTING PURPOSES!!!!
+    options.User.RequireUniqueEmail = true;
+    options.Password.RequiredUniqueChars = 0;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 3;
+}).AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
 // Add services to the container.
 builder.Services.AddScoped<IRecordRepository,RecordRepository>();
 builder.Services.AddScoped<IGenreRepository,GenreRepository>();

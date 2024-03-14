@@ -1,4 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Pri.Api.Music.Core.Entities;
 using Pri.CleanArchitecture.Music.Core.Entities;
 using Pri.CleanArchitecture.Music.Infrastructure.Data.Seeding;
 using System;
@@ -10,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace Pri.CleanArchitecture.Music.Infrastructure.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
