@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Pri.Api.Music.Core.Entities;
 using Pri.CleanArchitecture.Music.Core.Entities;
 using System;
 using System.Collections.Generic;
@@ -51,14 +53,72 @@ namespace Pri.CleanArchitecture.Music.Infrastructure.Data.Seeding
                 new {PropertiesId = 2, RecordsId=2 },
                 new {PropertiesId = 2, RecordsId=3 },
                 new {PropertiesId = 3, RecordsId=1 },
-                new {PropertiesId = 3, RecordsId=2 },
+            };
+            //records
+            var applicationUserRecords = new[]
+            {
+                new {RecordsId = 1,ApplicationUsersId = "1" },
+                new {RecordsId = 2,ApplicationUsersId = "1" },
+                new {RecordsId = 3,ApplicationUsersId = "1" },
+                new {RecordsId = 1,ApplicationUsersId = "2" },
+                new {RecordsId = 2,ApplicationUsersId = "2" },
+                new {RecordsId = 3,ApplicationUsersId = "2" },
             };
             //hasdata methods
+            //seed users
+            var adminUser = new ApplicationUser
+            {
+                Id = "1",
+                UserName = "admin@music.com",
+                NormalizedUserName = "ADMIN@MUSIC.COM",
+                Email = "admin@music.com",
+                NormalizedEmail = "ADMIN@MUSIC.COM",
+                DateOfBirth = DateTime.Now,
+                Firstname = "Bart",
+                Lastname = "Soete",
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                SecurityStamp = Guid.NewGuid().ToString(),
+                EmailConfirmed = true,
+            };
+            var user = new ApplicationUser
+            {
+                Id = "2",
+                UserName = "user@music.com",
+                NormalizedUserName = "USER@MUSIC.COM",
+                Email = "user@music.com",
+                NormalizedEmail = "USER@MUSIC.COM",
+                DateOfBirth = DateTime.Now,
+                Firstname = "Mileto",
+                Lastname = "Di Marco",
+                ConcurrencyStamp = Guid.NewGuid().ToString(),
+                SecurityStamp = Guid.NewGuid().ToString(),
+                EmailConfirmed = true,
+            };
+            IPasswordHasher<ApplicationUser> passwordHasher = new PasswordHasher<ApplicationUser>();
+            //FOR TESTING ONLY!
+            adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "Test123");
+            user.PasswordHash = passwordHasher.HashPassword(user, "Test123");
+            //roles
+            var applicationRoles = new IdentityRole[]
+            {
+                new IdentityRole{Id = "1",Name = "Admin",NormalizedName = "ADMIN"},
+                new IdentityRole{Id = "2",Name = "User",NormalizedName = "USER"},
+            };
+            //add users to role
+            var userRoles = new IdentityUserRole<string>[]
+            {
+                new IdentityUserRole<string>{RoleId = "1",UserId = "1" },//admin
+                new IdentityUserRole<string>{RoleId = "2",UserId = "2" }//user
+            };
             modelBuilder.Entity<Genre>().HasData(genres);
             modelBuilder.Entity<Artist>().HasData(artists);
             modelBuilder.Entity<Property>().HasData(properties);
             modelBuilder.Entity<Record>().HasData(records);
+            modelBuilder.Entity<ApplicationUser>().HasData(adminUser, user);
+            modelBuilder.Entity<IdentityRole>().HasData(applicationRoles);
+            modelBuilder.Entity<IdentityUserRole<string>>().HasData(userRoles);
             modelBuilder.Entity($"{nameof(Property)}{nameof(Record)}").HasData(propertyRecords);
+            modelBuilder.Entity($"{nameof(ApplicationUser)}{nameof(Record)}").HasData(applicationUserRecords);
         }
     }
 }

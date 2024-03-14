@@ -17,6 +17,6 @@ namespace Pri.CleanArchitecture.Music.Core.Entities
         public decimal Price { get; set; }
         public string Image { get; set; }
         public ICollection<Property> Properties { get; set; }
-        public ICollection<ApplicationUser> Users { get; set; }
+        public ICollection<ApplicationUser> ApplicationUsers { get; set; }
     }
 }
