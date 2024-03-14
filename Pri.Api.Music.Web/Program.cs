@@ -17,7 +17,7 @@ builder.Services.AddDbContext<ApplicationDbContext>
     (options => options
     .UseSqlServer(builder.Configuration.GetConnectionString("DefaultDb")));
 //register identity
-builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+builder.Services.AddIdentity<ApplicationUser, IdentityRole<int>>(options =>
 {
     //ONLY FOR TESTING PURPOSES!!!!
     options.User.RequireUniqueEmail = true;

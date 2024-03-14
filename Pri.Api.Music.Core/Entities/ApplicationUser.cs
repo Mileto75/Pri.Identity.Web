@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Pri.Api.Music.Core.Entities
 {
-    public class ApplicationUser : IdentityUser
+    public class ApplicationUser : IdentityUser<int>
     {
         public string Firstname { get; set; }
         public string Lastname { get; set; }
