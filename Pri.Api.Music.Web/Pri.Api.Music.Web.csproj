@@ -19,4 +19,9 @@
   <ItemGroup>
     <ProjectReference Include="..\Pri.Api.Music.Infrastructure\Pri.Api.Music.Infrastructure.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Auth\Data\" />
+    <Folder Include="Areas\Auth\Models\" />
+  </ItemGroup>
 </Project>
