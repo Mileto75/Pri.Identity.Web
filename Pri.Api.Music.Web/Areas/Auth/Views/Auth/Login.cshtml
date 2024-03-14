@@ -2,8 +2,9 @@
 
 <div class="row">
     <div class="col col-lg-4 mx-auto border border-1 rounded rounded-1">
-        <div class="row">
-            <div class="col col-lg-4 mx-auto border border-1">
+        <div asp-validation-summary="ModelOnly" class="alert alert-primary" role="alert">
+                    
+                </div>
                 <form asp-controller="Auth" asp-action="Login" method="post">
                     <div class="form-group">
                         <label asp-for="Username"></label>
@@ -15,10 +16,10 @@
                         <input asp-for="Password" class="form-control">
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>
-                    <button type="submit" class="btn btn-primary">Login</button>
+                    <button type="submit" class="btn btn-primary mt-2 mb-2">Login</button>
                 </form>
             </div>
         </div>
-    </div>
-</div>
+    
+
 
