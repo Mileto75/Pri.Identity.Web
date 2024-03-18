@@ -1,4 +1,8 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Pri.Api.Music.Core.Entities;
 using Pri.Api.Music.Core.Interfaces.Repositories;
 using Pri.Api.Music.Core.Interfaces.Services;
 using Pri.Api.Music.Core.Services;
@@ -8,6 +12,7 @@ using Pri.CleanArchitecture.Music.Core.Interfaces.Services;
 using Pri.CleanArchitecture.Music.Core.Services;
 using Pri.CleanArchitecture.Music.Infrastructure.Data;
 using Pri.CleanArchitecture.Music.Infrastructure.Repositories;
+using System.Text;
 
 namespace Pri.Api.Music.Api
 {
@@ -22,6 +27,36 @@ namespace Pri.Api.Music.Api
             builder.Services.AddDbContext<ApplicationDbContext>
                 (options => options
                 .UseSqlServer(builder.Configuration.GetConnectionString("DefaultDb")));
+            //register identity
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
+            {
+                //ONLY FOR TESTING PURPOSES!!!!
+                options.User.RequireUniqueEmail = true;
+                options.Password.RequiredUniqueChars = 0;
+                options.Password.RequireNonAlphanumeric = false;
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
+                options.Password.RequiredLength = 3;
+            }).AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
+            //add jwt authentication
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    ValidateAudience = true,
+                    ValidateIssuer = true,
+                    ValidAudience = builder.Configuration["JWTConfiguration:Audience"],
+                    ValidIssuer = builder.Configuration["JWTConfiguration:Issuer"],
+                    RequireExpirationTime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTConfiguration:SigninKey"]))
+                };
+            });
             // Add services to the container.
             builder.Services.AddScoped<IRecordRepository, RecordRepository>();
             builder.Services.AddScoped<IGenreRepository, GenreRepository>();
@@ -48,6 +83,7 @@ namespace Pri.Api.Music.Api
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
 

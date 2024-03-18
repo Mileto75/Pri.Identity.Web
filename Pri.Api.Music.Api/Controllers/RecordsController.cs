@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Pri.Api.Music.Api.Dtos;
 using Pri.Api.Music.Api.Extensions;
@@ -27,6 +28,7 @@ namespace Pri.Api.Music.Api.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
+            var claims = User.Claims;
             var result = await _recordService.GetAllAsync();
             return Ok(result.Value.MapToDto());
         }
@@ -44,6 +46,7 @@ namespace Pri.Api.Music.Api.Controllers
             return NotFound(result.Errors);
         }
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Add(RecordRequestDto recordRequestDto)
         {
             var result = await _recordService.CreateRecordAsync(
