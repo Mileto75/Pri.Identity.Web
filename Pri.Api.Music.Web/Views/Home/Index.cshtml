@@ -2,7 +2,21 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div id="app" class="text-center">
+    <h1 class="display-4">{{pageTitle}}</h1>
+    <div v-if="loading" class="spinner-border text-primary" role="status">
+
+    </div>
+    <div v-if="categoriesLoaded" class="form-control">
+        <select v-on:change="getQuoteByCategory()" v-model="selectedCategory" class="form-select-lg">
+            <option v-for="category in categories" v-bind:value="category">
+                {{category}}
+            </option>
+        </select>
+    </div>
+    <div v-if="quoteLoaded" class="alert alert-primary" role="alert">
+        {{quote}}
+    </div>
+    
 </div>
+<script src="~/js/script.js"></script>
