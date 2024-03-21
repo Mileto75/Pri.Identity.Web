@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Pri.Api.Music.Core.Entities;
 using Pri.Api.Music.Web.Areas.Auth.ViewModels;
+using System.Security.Claims;
 
 namespace Pri.Api.Music.Web.Areas.Auth.Controllers
 {
@@ -91,8 +92,14 @@ namespace Pri.Api.Music.Web.Areas.Auth.Controllers
                 }
                 return View(authRegisterViewModel);
             }
-            //add user to user role
-            result = await _userManager.AddToRoleAsync(newUser, "User");
+            //add claimtypes to user
+            var userClaims = new Claim[]
+            {
+                new Claim(ClaimTypes.Role,"User"),
+                new Claim(ClaimTypes.DateOfBirth,newUser.DateOfBirth.ToString()),
+            };
+            result = await _userManager
+                .AddClaimsAsync(newUser,userClaims);
             if(!result.Succeeded)
             {
                 foreach(var error in result.Errors)
