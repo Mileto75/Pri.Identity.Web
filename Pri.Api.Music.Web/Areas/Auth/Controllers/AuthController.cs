@@ -91,6 +91,16 @@ namespace Pri.Api.Music.Web.Areas.Auth.Controllers
                 }
                 return View(authRegisterViewModel);
             }
+            //add user to user role
+            result = await _userManager.AddToRoleAsync(newUser, "User");
+            if(!result.Succeeded)
+            {
+                foreach(var error in result.Errors)
+                {
+                    ModelState.AddModelError("",error.Description);
+                }
+                return View(authRegisterViewModel);
+            }
             //user registered => generate emailconfirmation token
             var token = await _userManager.GenerateEmailConfirmationTokenAsync(newUser);
             ViewBag.UserId = newUser.Id;

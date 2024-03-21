@@ -95,7 +95,7 @@ namespace Pri.CleanArchitecture.Music.Infrastructure.Data.Seeding
                 EmailConfirmed = true,
             };
             IPasswordHasher<ApplicationUser> passwordHasher = new PasswordHasher<ApplicationUser>();
-            //FOR TESTING ONLY!
+            //PASSWORD Test123 is FOR TESTING ONLY!!!
             adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "Test123");
             user.PasswordHash = passwordHasher.HashPassword(user, "Test123");
             //roles
