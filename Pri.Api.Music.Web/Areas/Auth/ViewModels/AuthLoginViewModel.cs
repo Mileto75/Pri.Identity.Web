@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel.DataAnnotations;
 
 namespace Pri.Api.Music.Web.Areas.Auth.ViewModels
 {
@@ -10,5 +11,7 @@ namespace Pri.Api.Music.Web.Areas.Auth.ViewModels
         [DataType(DataType.Password)]
         [Required]
         public string Password { get; set; }
+        [HiddenInput]
+        public string ReturnUrl { get; set; }
     }
 }

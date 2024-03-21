@@ -20,6 +20,7 @@ builder.Services.AddDbContext<ApplicationDbContext>
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     //ONLY FOR TESTING PURPOSES!!!!
+    options.SignIn.RequireConfirmedEmail = true;
     options.User.RequireUniqueEmail = true;
     options.Password.RequiredUniqueChars = 0;
     options.Password.RequireNonAlphanumeric = false;
@@ -29,6 +30,14 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
     options.Password.RequiredLength = 3;
 }).AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
+//set the redirect cookies
+builder.Services.ConfigureApplicationCookie(options =>
+    {
+        options.LoginPath = "/Auth/Auth/Login";
+        options.LogoutPath = "/Auth/Auth/Logout";
+        options.AccessDeniedPath = "/Auth/Auth/AccessDenied";
+    }
+);
 // Add services to the container.
 builder.Services.AddScoped<IRecordRepository,RecordRepository>();
 builder.Services.AddScoped<IGenreRepository,GenreRepository>();

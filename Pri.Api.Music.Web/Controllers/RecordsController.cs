@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Pri.Api.Music.Core.Interfaces.Services;
 using Pri.Api.Music.Web.ViewModels;
@@ -23,6 +24,8 @@ namespace Pri.CleanArchitecture.Music.Web.Controllers
             _artistService = artistService;
         }
 
+        [HttpGet]
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var user = User;
