@@ -25,7 +25,7 @@ namespace Pri.CleanArchitecture.Music.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Index()
         {
             var user = User;

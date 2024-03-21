@@ -21,11 +21,11 @@ namespace Pri.Api.Music.Web.Areas.Auth.Controllers
         public IActionResult Login(string returnUrl)
         {
             var authLoginViewModel = new AuthLoginViewModel();
-            if(string.IsNullOrEmpty(returnUrl))
+            authLoginViewModel.ReturnUrl = "/records";
+            if (!string.IsNullOrEmpty(returnUrl))
             {
-                authLoginViewModel.ReturnUrl = "/records";
+                authLoginViewModel.ReturnUrl = returnUrl;
             }
-            authLoginViewModel.ReturnUrl = returnUrl;
             return View(authLoginViewModel);
         }
         [HttpPost]
