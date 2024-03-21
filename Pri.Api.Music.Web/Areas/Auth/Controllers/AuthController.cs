@@ -119,5 +119,9 @@ namespace Pri.Api.Music.Web.Areas.Auth.Controllers
             }
             return RedirectToAction("Error");
         }
+        public IActionResult AccessDenied()
+        {
+            return View();
+        }
     }
 }

@@ -2,7 +2,10 @@
 
 <div class="row">
     <div class="col col-lg-6 mx-auto">
-        <a asp-action="Create" class="btn btn-outline-info">Create</a>
+        @if(User.IsInRole("Admin"))
+        {
+            <a asp-action="Create" class="btn btn-outline-info">Create</a>
+        }
         <table class="table table-responsive table-hover">
             <thead>
                 <tr>
@@ -13,16 +16,18 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach(var record in Model.Records)
-                { 
+                @foreach (var record in Model.Records)
+                {
                     <tr>
                         <td>@record.Title</td>
                         <td>@record.Genre</td>
                         <td>@record.Artist</td>
-                        <td><a asp-controller="Records"
+                        <td>
+                            <a asp-controller="Records"
                                asp-action="Detail"
                                asp-route-id="@record.Id"
-                               class="btn btn-outline-info">Info</a></td>
+                               class="btn btn-outline-info">Info</a>
+                        </td>
                     </tr>
                 }
             </tbody>

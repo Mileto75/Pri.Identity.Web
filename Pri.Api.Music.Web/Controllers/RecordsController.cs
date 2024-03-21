@@ -66,6 +66,7 @@ namespace Pri.CleanArchitecture.Music.Web.Controllers
             return View("Error", result.Errors);
         }
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create()
         {
             var recordsCreateViewModel = new RecordsCreateViewModel();
