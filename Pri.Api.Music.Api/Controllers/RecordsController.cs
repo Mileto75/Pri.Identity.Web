@@ -33,7 +33,7 @@ namespace Pri.Api.Music.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize(Policy="Admin")]
+        [Authorize(Policy="User")]
         public async Task<IActionResult> Get(int id)
         {
             //get the record
@@ -118,6 +118,7 @@ namespace Pri.Api.Music.Api.Controllers
         }
         //implement SearchByArtist
         [HttpGet("Search/ByArtistName/{name}")]
+        [Authorize(Policy ="AdultOnly")]
         public async Task<IActionResult> SearchByArtist(string name)
         {
             if(string.IsNullOrWhiteSpace(name))

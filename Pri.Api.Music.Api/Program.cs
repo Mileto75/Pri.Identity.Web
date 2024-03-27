@@ -12,6 +12,7 @@ using Pri.CleanArchitecture.Music.Core.Interfaces.Services;
 using Pri.CleanArchitecture.Music.Core.Services;
 using Pri.CleanArchitecture.Music.Infrastructure.Data;
 using Pri.CleanArchitecture.Music.Infrastructure.Repositories;
+using System.Data;
 using System.Security.Claims;
 using System.Text;
 
@@ -54,18 +55,51 @@ namespace Pri.Api.Music.Api
                 ValidateLifetime = true,
                 ValidAudience = builder.Configuration["JWTConfiguration:Audience"],
                 ValidIssuer = builder.Configuration["JWTConfiguration:Issuer"],
-                IssuerSigningKey = 
+                IssuerSigningKey =
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTConfiguration:SecretKey"]))
             });
             //Add authorisation policies
             //admin claim
             builder.Services.AddAuthorization(options =>
-            options.AddPolicy("Admin", policy => 
             {
-                policy.RequireClaim(ClaimTypes.Role, "Admin");
-            }
-            ));
-            //userclaim
+                options.AddPolicy("Admin", policy =>
+                {
+                    policy.RequireClaim(ClaimTypes.Role, "Admin");
+                }
+                );
+                //userclaim
+                options.AddPolicy("User", policy =>
+                {
+                    policy.RequireAssertion(context =>
+                    {
+                        if(context.User.HasClaim(ClaimTypes.Role,"Admin")
+                            || context.User.HasClaim(ClaimTypes.Role,"User"))
+                        {
+                            return true;
+                        }
+                        return false;
+                    });
+                });
+                //18+
+                options.AddPolicy("AdultOnly", policy =>
+                {
+                    policy.RequireAssertion(context =>
+                    {
+                        //get dob claim
+                        var claimValue = context.User.Claims.FirstOrDefault(c =>
+                        c.Type.Equals(ClaimTypes.DateOfBirth));
+                        
+                        //parse to date
+                        var dateOfBirth = DateTime.Parse(claimValue.Value);
+                        //calculate age
+                        if (DateTime.Now.Year - dateOfBirth.Year >= 18)
+                        {
+                            return true;
+                        }
+                        return false;
+                    });
+                });
+            });
 
             // Add services to the container.
             builder.Services.AddScoped<IRecordRepository, RecordRepository>();

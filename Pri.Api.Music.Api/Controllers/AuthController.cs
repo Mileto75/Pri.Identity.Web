@@ -6,6 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 using Pri.Api.Music.Api.Dtos;
 using Pri.Api.Music.Core.Entities;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Text;
 
 namespace Pri.Api.Music.Api.Controllers
@@ -63,9 +64,50 @@ namespace Pri.Api.Music.Api.Controllers
             return Ok(new AuthLoginResponseDto { Token = serializedToken });
         }
         [HttpPost("Register")]
-        public async Task<IActionResult> Register()
+        public async Task<IActionResult> Register(AuthRegisterRequestDto authRegisterRequestDto)
         {
-            return Ok();
+            //create the user
+            var newUser = new ApplicationUser
+            {
+                UserName = authRegisterRequestDto.Username,
+                Firstname = authRegisterRequestDto.Firstname,
+                Lastname = authRegisterRequestDto.Lastname,
+                DateOfBirth = authRegisterRequestDto.DateOfBirth,
+                Email = authRegisterRequestDto.Username,
+                EmailConfirmed = true,//ONLY FOR TESTING/DEVELOPMENT PURPOSE
+            };
+            //add the user
+            var result = await _userManager.CreateAsync(newUser,authRegisterRequestDto.Password);
+            if(!result.Succeeded)
+            {
+                //add to the modelstate
+                foreach(var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+                return BadRequest(ModelState.Values);
+            }
+            //add the claims
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Role,"User"),
+                new Claim(ClaimTypes.DateOfBirth,newUser.DateOfBirth.ToString()),
+                new Claim(ClaimTypes.Name,newUser.UserName),
+                new Claim(ClaimTypes.NameIdentifier,newUser.Id),
+            };
+            //add claims to user
+            result = await _userManager.AddClaimsAsync(newUser, claims);
+            if (!result.Succeeded)
+            {
+                //add to the modelstate
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+                return BadRequest(ModelState.Values);
+            }
+            //call the emailservice
+            return Ok("Registered");
         }
 
     }
