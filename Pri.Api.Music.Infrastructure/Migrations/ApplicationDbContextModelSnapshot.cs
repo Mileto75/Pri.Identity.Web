@@ -94,22 +94,6 @@ namespace Pri.CleanArchitecture.Music.Infrastructure.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            Id = "1",
-                            ConcurrencyStamp = "d24cb3f9-0c3e-4a87-9bd1-f5c823f5bde3",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
-                        },
-                        new
-                        {
-                            Id = "2",
-                            ConcurrencyStamp = "1dcd2c85-367c-48ed-9559-d5b1db30c598",
-                            Name = "User",
-                            NormalizedName = "USER"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -160,6 +144,36 @@ namespace Pri.CleanArchitecture.Music.Infrastructure.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("AspNetUserClaims", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+                            ClaimValue = "Admin",
+                            UserId = "1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            ClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+                            ClaimValue = "User",
+                            UserId = "2"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            ClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/dateofbirth",
+                            ClaimValue = "27/03/2024 15:05:45",
+                            UserId = "1"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            ClaimType = "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/dateofbirth",
+                            ClaimValue = "27/03/2024 15:05:45",
+                            UserId = "2"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -197,18 +211,6 @@ namespace Pri.CleanArchitecture.Music.Infrastructure.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
-
-                    b.HasData(
-                        new
-                        {
-                            UserId = "1",
-                            RoleId = "1"
-                        },
-                        new
-                        {
-                            UserId = "2",
-                            RoleId = "2"
-                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -308,8 +310,8 @@ namespace Pri.CleanArchitecture.Music.Infrastructure.Migrations
                         {
                             Id = "1",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "64fc13d7-a254-4dba-a261-4b9b7aef5bc0",
-                            DateOfBirth = new DateTime(2024, 3, 14, 11, 26, 49, 212, DateTimeKind.Local).AddTicks(8069),
+                            ConcurrencyStamp = "0816d758-d569-4b0b-acac-b7b84ac28bba",
+                            DateOfBirth = new DateTime(2024, 3, 27, 15, 5, 45, 371, DateTimeKind.Local).AddTicks(6952),
                             Email = "admin@music.com",
                             EmailConfirmed = true,
                             Firstname = "Bart",
@@ -317,9 +319,9 @@ namespace Pri.CleanArchitecture.Music.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@MUSIC.COM",
                             NormalizedUserName = "ADMIN@MUSIC.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEF31B8Be6x5XpHykIdAYlttE6DBUTNjFQdd5bmXgMAsUmKIaotGDMfDkoJQb5xfJsA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEG5j1ZoavTZPumZPZBdySEedWc/RsvoFRFjuhdQG1e7VIafrD1Eewp02DkLsmctY2g==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "330b3a97-e4e0-4375-bf00-e85e492d05c4",
+                            SecurityStamp = "8c8a217c-ddfc-46cc-8080-3967628ac7c4",
                             TwoFactorEnabled = false,
                             UserName = "admin@music.com"
                         },
@@ -327,8 +329,8 @@ namespace Pri.CleanArchitecture.Music.Infrastructure.Migrations
                         {
                             Id = "2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "eafb03cc-2086-4162-bc0e-12aecc1c6c0e",
-                            DateOfBirth = new DateTime(2024, 3, 14, 11, 26, 49, 212, DateTimeKind.Local).AddTicks(8103),
+                            ConcurrencyStamp = "1daf9db7-03f1-4506-bbc5-659c8c161532",
+                            DateOfBirth = new DateTime(2024, 3, 27, 15, 5, 45, 371, DateTimeKind.Local).AddTicks(7014),
                             Email = "user@music.com",
                             EmailConfirmed = true,
                             Firstname = "Mileto",
@@ -336,9 +338,9 @@ namespace Pri.CleanArchitecture.Music.Infrastructure.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "USER@MUSIC.COM",
                             NormalizedUserName = "USER@MUSIC.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEFdwRzy910LPuOZ/g+OAS8YeC+QxQ8lQMdrAaAi0ReDcmA+K4/uBc/9NBZetn5/Vrw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEOn0RJcl5yKtAC0nXg6RvM1tvqvB0sf646/lkqyklTqtQ5QzaAkRN6q/S4pQYoRQQQ==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "daccfd10-fbd0-4d4d-8562-212bda9a527e",
+                            SecurityStamp = "46e5e895-e332-4fda-85bf-9f0b5f9cda5e",
                             TwoFactorEnabled = false,
                             UserName = "user@music.com"
                         });

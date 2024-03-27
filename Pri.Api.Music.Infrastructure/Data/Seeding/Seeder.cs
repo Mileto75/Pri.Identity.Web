@@ -5,6 +5,7 @@ using Pri.CleanArchitecture.Music.Core.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -98,25 +99,46 @@ namespace Pri.CleanArchitecture.Music.Infrastructure.Data.Seeding
             //PASSWORD Test123 is FOR TESTING ONLY!!!
             adminUser.PasswordHash = passwordHasher.HashPassword(adminUser, "Test123");
             user.PasswordHash = passwordHasher.HashPassword(user, "Test123");
-            //roles
-            var applicationRoles = new IdentityRole[]
+            //claims
+            //role claims
+            var userClaims = new IdentityUserClaim<string>[]
             {
-                new IdentityRole{Id = "1",Name = "Admin",NormalizedName = "ADMIN"},
-                new IdentityRole{Id = "2",Name = "User",NormalizedName = "USER"},
+                new IdentityUserClaim<string>
+                {
+                    Id = 1,
+                    UserId = "1",
+                    ClaimType = ClaimTypes.Role,
+                    ClaimValue = "Admin"
+                },
+                new IdentityUserClaim<string>
+                {
+                    Id = 2,
+                    UserId = "2",
+                    ClaimType = ClaimTypes.Role,
+                    ClaimValue = "User"
+                },
+                new IdentityUserClaim<string>
+                {
+                    Id = 3,
+                    UserId = "1",
+                    ClaimType = ClaimTypes.DateOfBirth,
+                    ClaimValue = adminUser.DateOfBirth.ToString(),
+                },
+                new IdentityUserClaim<string>
+                {
+                    Id = 4,
+                    UserId = "2",
+                    ClaimType = ClaimTypes.DateOfBirth,
+                    ClaimValue = user.DateOfBirth.ToString(),
+                },
             };
-            //add users to role
-            var userRoles = new IdentityUserRole<string>[]
-            {
-                new IdentityUserRole<string>{RoleId = "1",UserId = "1" },//admin
-                new IdentityUserRole<string>{RoleId = "2",UserId = "2" }//user
-            };
+
             modelBuilder.Entity<Genre>().HasData(genres);
             modelBuilder.Entity<Artist>().HasData(artists);
             modelBuilder.Entity<Property>().HasData(properties);
             modelBuilder.Entity<Record>().HasData(records);
             modelBuilder.Entity<ApplicationUser>().HasData(adminUser, user);
-            modelBuilder.Entity<IdentityRole>().HasData(applicationRoles);
-            modelBuilder.Entity<IdentityUserRole<string>>().HasData(userRoles);
+            modelBuilder.Entity<IdentityUserClaim<string>>().HasData(userClaims);
             modelBuilder.Entity($"{nameof(Property)}{nameof(Record)}").HasData(propertyRecords);
             modelBuilder.Entity($"{nameof(ApplicationUser)}{nameof(Record)}").HasData(applicationUserRecords);
         }

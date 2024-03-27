@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Pri.CleanArchitecture.Music.Infrastructure.Migrations
 {
-    public partial class addIdentitySeeding : Migration
+    public partial class AddIdentitySeeding : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -37,22 +37,14 @@ namespace Pri.CleanArchitecture.Music.Infrastructure.Migrations
                 columns: new[] { "ApplicationUsersId", "RecordsId" });
 
             migrationBuilder.InsertData(
-                table: "AspNetRoles",
-                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[,]
-                {
-                    { "1", "d24cb3f9-0c3e-4a87-9bd1-f5c823f5bde3", "Admin", "ADMIN" },
-                    { "2", "1dcd2c85-367c-48ed-9559-d5b1db30c598", "User", "USER" }
-                });
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateOfBirth", "Email", "EmailConfirmed", "Firstname", "Lastname", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "1", 0, "0816d758-d569-4b0b-acac-b7b84ac28bba", new DateTime(2024, 3, 27, 15, 5, 45, 371, DateTimeKind.Local).AddTicks(6952), "admin@music.com", true, "Bart", "Soete", false, null, "ADMIN@MUSIC.COM", "ADMIN@MUSIC.COM", "AQAAAAEAACcQAAAAEG5j1ZoavTZPumZPZBdySEedWc/RsvoFRFjuhdQG1e7VIafrD1Eewp02DkLsmctY2g==", null, false, "8c8a217c-ddfc-46cc-8080-3967628ac7c4", false, "admin@music.com" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "DateOfBirth", "Email", "EmailConfirmed", "Firstname", "Lastname", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[,]
-                {
-                    { "1", 0, "64fc13d7-a254-4dba-a261-4b9b7aef5bc0", new DateTime(2024, 3, 14, 11, 26, 49, 212, DateTimeKind.Local).AddTicks(8069), "admin@music.com", true, "Bart", "Soete", false, null, "ADMIN@MUSIC.COM", "ADMIN@MUSIC.COM", "AQAAAAEAACcQAAAAEF31B8Be6x5XpHykIdAYlttE6DBUTNjFQdd5bmXgMAsUmKIaotGDMfDkoJQb5xfJsA==", null, false, "330b3a97-e4e0-4375-bf00-e85e492d05c4", false, "admin@music.com" },
-                    { "2", 0, "eafb03cc-2086-4162-bc0e-12aecc1c6c0e", new DateTime(2024, 3, 14, 11, 26, 49, 212, DateTimeKind.Local).AddTicks(8103), "user@music.com", true, "Mileto", "Di Marco", false, null, "USER@MUSIC.COM", "USER@MUSIC.COM", "AQAAAAEAACcQAAAAEFdwRzy910LPuOZ/g+OAS8YeC+QxQ8lQMdrAaAi0ReDcmA+K4/uBc/9NBZetn5/Vrw==", null, false, "daccfd10-fbd0-4d4d-8562-212bda9a527e", false, "user@music.com" }
-                });
+                values: new object[] { "2", 0, "1daf9db7-03f1-4506-bbc5-659c8c161532", new DateTime(2024, 3, 27, 15, 5, 45, 371, DateTimeKind.Local).AddTicks(7014), "user@music.com", true, "Mileto", "Di Marco", false, null, "USER@MUSIC.COM", "USER@MUSIC.COM", "AQAAAAEAACcQAAAAEOn0RJcl5yKtAC0nXg6RvM1tvqvB0sf646/lkqyklTqtQ5QzaAkRN6q/S4pQYoRQQQ==", null, false, "46e5e895-e332-4fda-85bf-9f0b5f9cda5e", false, "user@music.com" });
 
             migrationBuilder.InsertData(
                 table: "ApplicationUserRecord",
@@ -68,12 +60,14 @@ namespace Pri.CleanArchitecture.Music.Infrastructure.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "AspNetUserRoles",
-                columns: new[] { "RoleId", "UserId" },
+                table: "AspNetUserClaims",
+                columns: new[] { "Id", "ClaimType", "ClaimValue", "UserId" },
                 values: new object[,]
                 {
-                    { "1", "1" },
-                    { "2", "2" }
+                    { 1, "http://schemas.microsoft.com/ws/2008/06/identity/claims/role", "Admin", "1" },
+                    { 2, "http://schemas.microsoft.com/ws/2008/06/identity/claims/role", "User", "2" },
+                    { 3, "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/dateofbirth", "27/03/2024 15:05:45", "1" },
+                    { 4, "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/dateofbirth", "27/03/2024 15:05:45", "2" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -135,24 +129,24 @@ namespace Pri.CleanArchitecture.Music.Infrastructure.Migrations
                 keyValues: new object[] { "2", 3 });
 
             migrationBuilder.DeleteData(
-                table: "AspNetUserRoles",
-                keyColumns: new[] { "RoleId", "UserId" },
-                keyValues: new object[] { "1", "1" });
-
-            migrationBuilder.DeleteData(
-                table: "AspNetUserRoles",
-                keyColumns: new[] { "RoleId", "UserId" },
-                keyValues: new object[] { "2", "2" });
-
-            migrationBuilder.DeleteData(
-                table: "AspNetRoles",
+                table: "AspNetUserClaims",
                 keyColumn: "Id",
-                keyValue: "1");
+                keyValue: 1);
 
             migrationBuilder.DeleteData(
-                table: "AspNetRoles",
+                table: "AspNetUserClaims",
                 keyColumn: "Id",
-                keyValue: "2");
+                keyValue: 2);
+
+            migrationBuilder.DeleteData(
+                table: "AspNetUserClaims",
+                keyColumn: "Id",
+                keyValue: 3);
+
+            migrationBuilder.DeleteData(
+                table: "AspNetUserClaims",
+                keyColumn: "Id",
+                keyValue: 4);
 
             migrationBuilder.DeleteData(
                 table: "AspNetUsers",
