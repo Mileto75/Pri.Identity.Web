@@ -33,7 +33,7 @@ namespace Pri.Api.Music.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        [Authorize]
+        [Authorize(Policy="Admin")]
         public async Task<IActionResult> Get(int id)
         {
             //get the record

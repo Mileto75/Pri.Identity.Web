@@ -12,6 +12,7 @@ using Pri.CleanArchitecture.Music.Core.Interfaces.Services;
 using Pri.CleanArchitecture.Music.Core.Services;
 using Pri.CleanArchitecture.Music.Infrastructure.Data;
 using Pri.CleanArchitecture.Music.Infrastructure.Repositories;
+using System.Security.Claims;
 using System.Text;
 
 namespace Pri.Api.Music.Api
@@ -56,6 +57,16 @@ namespace Pri.Api.Music.Api
                 IssuerSigningKey = 
                 new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTConfiguration:SecretKey"]))
             });
+            //Add authorisation policies
+            //admin claim
+            builder.Services.AddAuthorization(options =>
+            options.AddPolicy("Admin", policy => 
+            {
+                policy.RequireClaim(ClaimTypes.Role, "Admin");
+            }
+            ));
+            //userclaim
+
             // Add services to the container.
             builder.Services.AddScoped<IRecordRepository, RecordRepository>();
             builder.Services.AddScoped<IGenreRepository, GenreRepository>();
