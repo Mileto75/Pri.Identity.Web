@@ -2,8 +2,11 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Pri.Api.Music.Api.Dtos;
 using Pri.Api.Music.Core.Entities;
+using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 
 namespace Pri.Api.Music.Api.Controllers
 {
@@ -13,11 +16,13 @@ namespace Pri.Api.Music.Api.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IConfiguration _configuration;
 
-        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        public AuthController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _configuration = configuration;
         }
 
         [HttpPost("Login")]
@@ -36,9 +41,26 @@ namespace Pri.Api.Music.Api.Controllers
             //get the claims
             var claims = await _userManager.GetClaimsAsync(user);
             //generate the token
-
+            //set the token parameters
+            var issuer = _configuration.GetValue<string>("JWTConfiguration:Issuer");
+            var audience = _configuration.GetValue<string>("JWTConfiguration:Audience");
+            var expiration = DateTime.Now.AddDays(_configuration.GetValue<int>("JWTConfiguration:ExpirationInDays"));
+            var key = Encoding.UTF8.GetBytes(_configuration.GetValue<string>("JWTConfiguration:SecretKey"));
+            SymmetricSecurityKey securityKey = new SymmetricSecurityKey(key);
+            var signinCredentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+            //token
+            var token = new JwtSecurityToken(
+                issuer: issuer,
+                audience: audience,
+                notBefore: DateTime.Now,
+                expires: expiration,
+                claims: claims,
+                signingCredentials: signinCredentials
+                );
+            //serialize token
+            var serializedToken = new JwtSecurityTokenHandler().WriteToken(token);
             //return the token
-            return Ok();
+            return Ok(new AuthLoginResponseDto { Token = serializedToken });
         }
         [HttpPost("Register")]
         public async Task<IActionResult> Register()
