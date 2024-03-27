@@ -1,5 +1,7 @@
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Pri.Api.Music.Core.Entities;
 using Pri.Api.Music.Core.Interfaces.Repositories;
 using Pri.Api.Music.Core.Interfaces.Services;
@@ -10,6 +12,7 @@ using Pri.CleanArchitecture.Music.Core.Interfaces.Services;
 using Pri.CleanArchitecture.Music.Core.Services;
 using Pri.CleanArchitecture.Music.Infrastructure.Data;
 using Pri.CleanArchitecture.Music.Infrastructure.Repositories;
+using System.Text;
 
 namespace Pri.Api.Music.Api
 {
@@ -38,6 +41,21 @@ namespace Pri.Api.Music.Api
                 options.Password.RequiredLength = 3;
             }).AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
+            //configure jwt bearer token
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = true,
+                ValidAudience = builder.Configuration["JWTConfiguration:Audience"],
+                ValidIssuer = builder.Configuration["JWTConfiguration:Issuer"],
+                IssuerSigningKey = 
+                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWTConfiguration:SecretKey"]))
+            });
             // Add services to the container.
             builder.Services.AddScoped<IRecordRepository, RecordRepository>();
             builder.Services.AddScoped<IGenreRepository, GenreRepository>();
@@ -64,9 +82,9 @@ namespace Pri.Api.Music.Api
 
             app.UseHttpsRedirection();
 
+            app.UseAuthentication();
             app.UseAuthorization();
-
-
+            
             app.MapControllers();
 
             app.Run();

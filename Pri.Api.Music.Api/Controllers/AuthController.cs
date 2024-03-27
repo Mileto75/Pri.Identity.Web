@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Pri.Api.Music.Api.Dtos;
 using Pri.Api.Music.Core.Entities;
 
 namespace Pri.Api.Music.Api.Controllers
@@ -20,11 +21,22 @@ namespace Pri.Api.Music.Api.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult> Login()
+        public async Task<IActionResult> Login(AuthLoginRequestDto authLoginRequestDto)
         {
             //authenticate the user
+            var result = await _signInManager.PasswordSignInAsync
+                (authLoginRequestDto.Username,authLoginRequestDto.Password,false,false);
+            if(!result.Succeeded)//wrong credentials
+            {
+                ModelState.AddModelError("", "Wrong credentials!");
+                return Unauthorized(ModelState.Values);
+            }
+            //get the user
+            var user = await _userManager.FindByNameAsync(authLoginRequestDto.Username);
             //get the claims
+            var claims = await _userManager.GetClaimsAsync(user);
             //generate the token
+
             //return the token
             return Ok();
         }
