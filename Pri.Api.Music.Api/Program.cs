@@ -85,19 +85,24 @@ namespace Pri.Api.Music.Api
                 {
                     policy.RequireAssertion(context =>
                     {
-                        //get dob claim
-                        var claimValue = context.User.Claims.FirstOrDefault(c =>
-                        c.Type.Equals(ClaimTypes.DateOfBirth));
-                        
-                        //parse to date
-                        var dateOfBirth = DateTime.Parse(claimValue.Value);
-                        //calculate age
-                        if (DateTime.Now.Year - dateOfBirth.Year >= 18)
+                        //check if claims are present(if there is a token)
+                        if (context.User.Claims.Count() != 0)
                         {
-                            return true;
+                            //get dob claim
+                            var claimValue = context.User.Claims.FirstOrDefault(c =>
+                            c.Type.Equals(ClaimTypes.DateOfBirth));
+
+                            //parse to date
+                            var dateOfBirth = DateTime.Parse(claimValue.Value);
+                            //calculate age
+                            if (DateTime.Now.Year - dateOfBirth.Year >= 18)
+                            {
+                                return true;
+                            }
+                            return false;
                         }
                         return false;
-                    });
+                     });
                 });
             });
 
